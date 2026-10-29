@@ -12,8 +12,8 @@
 # pragma once
 #endif
 #
-#if !defined (_tui_h_h_)
-# define _tui_h_h_ 1
+#if !defined (_tui_h_)
+# define _tui_h_ 1
 #
 # define TUI_VERSION "1.0"
 #
@@ -50,22 +50,22 @@ enum tui_key_e {
     TUI_KEY_ARROW_RIGHT = ('\x1b' << 24) | ('[' << 16) | ('C' << 8) | (0 << 0),
     TUI_KEY_ARROW_LEFT  = ('\x1b' << 24) | ('[' << 16) | ('D' << 8) | (0 << 0),
     
-    TUI_KEY_HOME     = ('\x1b' << 24) | ('[' << 16) | ('1' << 8) | ('~' << 0),
-    TUI_KEY_INSERT   = ('\x1b' << 24) | ('[' << 16) | ('2' << 8) | ('~' << 0),
-    TUI_KEY_DELETE   = ('\x1b' << 24) | ('[' << 16) | ('3' << 8) | ('~' << 0),
-    TUI_KEY_END      = ('\x1b' << 24) | ('[' << 16) | ('4' << 8) | ('~' << 0),
-    TUI_KEY_PAGEUP   = ('\x1b' << 24) | ('[' << 16) | ('5' << 8) | ('~' << 0),
-    TUI_KEY_PAGEDOWN = ('\x1b' << 24) | ('[' << 16) | ('6' << 8) | ('~' << 0),
+    TUI_KEY_HOME        = ('\x1b' << 24) | ('[' << 16) | ('1' << 8) | ('~' << 0),
+    TUI_KEY_INSERT      = ('\x1b' << 24) | ('[' << 16) | ('2' << 8) | ('~' << 0),
+    TUI_KEY_DELETE      = ('\x1b' << 24) | ('[' << 16) | ('3' << 8) | ('~' << 0),
+    TUI_KEY_END         = ('\x1b' << 24) | ('[' << 16) | ('4' << 8) | ('~' << 0),
+    TUI_KEY_PAGEUP      = ('\x1b' << 24) | ('[' << 16) | ('5' << 8) | ('~' << 0),
+    TUI_KEY_PAGEDOWN    = ('\x1b' << 24) | ('[' << 16) | ('6' << 8) | ('~' << 0),
     
-    TUI_KEY_F1 = ('\x1b' << 24) | ('[' << 16) | ('O' << 8) | ('P' << 0),
-    TUI_KEY_F2 = ('\x1b' << 24) | ('[' << 16) | ('O' << 8) | ('Q' << 0),
-    TUI_KEY_F3 = ('\x1b' << 24) | ('[' << 16) | ('O' << 8) | ('R' << 0),
-    TUI_KEY_F4 = ('\x1b' << 24) | ('[' << 16) | ('O' << 8) | ('S' << 0),
-    TUI_KEY_F5 = ('\x1b' << 24) | ('[' << 16) | ('1' << 8) | ('5' << 0),
-    TUI_KEY_F6 = ('\x1b' << 24) | ('[' << 16) | ('1' << 8) | ('7' << 0),
-    TUI_KEY_F7 = ('\x1b' << 24) | ('[' << 16) | ('1' << 8) | ('8' << 0),
-    TUI_KEY_F8 = ('\x1b' << 24) | ('[' << 16) | ('1' << 8) | ('9' << 0),
-    TUI_KEY_F9 = ('\x1b' << 24) | ('[' << 16) | ('2' << 8) | ('0' << 0),
+    TUI_KEY_F1          = ('\x1b' << 24) | ('[' << 16) | ('O' << 8) | ('P' << 0),
+    TUI_KEY_F2          = ('\x1b' << 24) | ('[' << 16) | ('O' << 8) | ('Q' << 0),
+    TUI_KEY_F3          = ('\x1b' << 24) | ('[' << 16) | ('O' << 8) | ('R' << 0),
+    TUI_KEY_F4          = ('\x1b' << 24) | ('[' << 16) | ('O' << 8) | ('S' << 0),
+    TUI_KEY_F5          = ('\x1b' << 24) | ('[' << 16) | ('1' << 8) | ('5' << 0),
+    TUI_KEY_F6          = ('\x1b' << 24) | ('[' << 16) | ('1' << 8) | ('7' << 0),
+    TUI_KEY_F7          = ('\x1b' << 24) | ('[' << 16) | ('1' << 8) | ('8' << 0),
+    TUI_KEY_F8          = ('\x1b' << 24) | ('[' << 16) | ('1' << 8) | ('9' << 0),
+    TUI_KEY_F9          = ('\x1b' << 24) | ('[' << 16) | ('2' << 8) | ('0' << 0),
 
 };
 
@@ -83,26 +83,28 @@ int tui_request(tui_t, const char *, char **);
 
 /* ... */
 
-#endif /* _tui_h_h_ */
+#endif /* _tui_h_ */
 #
-#if defined TUI_IMPLEMENTATION
+#if defined (TUI_IMPLEMENTATION)
+# if !defined (_tui_impl_h_)
+#  define _tui_impl_h_ 1
 #
-# include <errno.h>
-# include <stdio.h>
-# include <stdlib.h>
+#  include <errno.h>
+#  include <stdio.h>
+#  include <stdlib.h>
 #
-# if defined (TUI_PLATFORM_LINUX) || \
-     defined (TUI_PLATFORM_APPLE) || \
-     defined (TUI_PLATFORM_BSD)
-#  undef unix
-#  include <unistd.h>
-#  include <termios.h>
-#  include <sys/ioctl.h>
+#  if defined (TUI_PLATFORM_LINUX) || \
+      defined (TUI_PLATFORM_APPLE) || \
+      defined (TUI_PLATFORM_BSD)
+#   undef unix
+#   include <unistd.h>
+#   include <termios.h>
+#   include <sys/ioctl.h>
 #
-# elif defined (TUI_PLATFORM_WIN32)
-#  /* includes here... */
+#  elif defined (TUI_PLATFORM_WIN32)
+#   /* includes here... */
 #
-# endif
+#  endif
 
 struct _tui_h_unix;
 
@@ -127,9 +129,9 @@ struct _tui_h {
 
 };
 
-# if defined (TUI_PLATFORM_LINUX) || \
-     defined (TUI_PLATFORM_APPLE) || \
-     defined (TUI_PLATFORM_BSD)
+#  if defined (TUI_PLATFORM_LINUX) || \
+      defined (TUI_PLATFORM_APPLE) || \
+      defined (TUI_PLATFORM_BSD)
 
 struct _tui_h_unix {
 
@@ -398,11 +400,11 @@ static int __tui_unix_request(struct _tui_h *pTui, const char *pCmd, char **pOut
 
 /* ... */
 
-# elif defined (TUI_PLATFORM_WIN32)
+#  elif defined (TUI_PLATFORM_WIN32)
 
 /* ... */
 
-# endif
+#  endif
 
 int tui_init(tui_t *pTui) {
     /* null-check */
@@ -415,9 +417,9 @@ int tui_init(tui_t *pTui) {
 
     /* setup platform-dependent api */
 
-# if defined (TUI_PLATFORM_LINUX) || \
-     defined (TUI_PLATFORM_APPLE) || \
-     defined (TUI_PLATFORM_BSD)
+#  if defined (TUI_PLATFORM_LINUX) || \
+      defined (TUI_PLATFORM_APPLE) || \
+      defined (TUI_PLATFORM_BSD)
 
     tui->api.init = __tui_unix_init;
     tui->api.free = __tui_unix_free;
@@ -425,11 +427,11 @@ int tui_init(tui_t *pTui) {
     tui->api.execute = __tui_unix_execute;
     tui->api.request = __tui_unix_request;
 
-# elif defined (TUI_PLATFORM_WIN32)
+#  elif defined (TUI_PLATFORM_WIN32)
 
     /* ... */
 
-# endif
+#  endif
 
     /* return 'tui' */
     *pTui = tui;
@@ -487,4 +489,5 @@ int tui_request(tui_t pTui, const char *pCmd, char **pOut) {
     return (tui->api.request(pTui, pCmd, pOut));
 }
 
+# endif /* _tui_impl_h_ */
 #endif /* TUI_IMPLEMENTATION */
