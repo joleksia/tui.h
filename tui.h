@@ -77,6 +77,8 @@ int tui_free(tui_t);
 
 int tui_input(tui_t, int *);
 
+int tui_output(tui_t, void *, const size_t, const size_t);
+
 int tui_execute(tui_t, const char *);
 
 int tui_request(tui_t, const char *, char **);
@@ -116,6 +118,7 @@ struct _tui_h {
         int (*init) (struct _tui_h *);
         int (*free) (struct _tui_h *);
         int (*input) (struct _tui_h *, int *);
+        int (*output) (struct _tui_h *, void *, const size_t, const size_t);
         int (*execute) (struct _tui_h *, const char *);
         int (*request) (struct _tui_h *, const char *, char **);
     } api;
@@ -151,6 +154,8 @@ static int __tui_unix_init(struct _tui_h *);
 static int __tui_unix_free(struct _tui_h *);
 
 static int __tui_unix_input(struct _tui_h *, int *);
+
+static int __tui_unix_output(struct _tui_h *, void *, const size_t, const size_t);
 
 static int __tui_unix_execute(struct _tui_h *, const char *);
 
@@ -323,6 +328,28 @@ static int __tui_unix_input(struct _tui_h *pTui, int *pOut) {
 }
 
 
+static int __tui_unix_output(struct _tui_h *pTui, void *pDat, const size_t cnt, const size_t siz) {
+    /* null-check */
+    if (!pTui) { return (0); }
+    if (!pDat) { return (0); }
+    
+    /* references */
+    struct
+    _tui_h_unix *unix = pTui->unix;
+    if (!unix) { return (0); }
+
+    /* 'write' 'pDat' to 'fd_stdout' */
+    ssize_t nwrite = 0;
+    if ((nwrite = write(unix->fd_stdout, pDat, cnt * siz)) != (ssize_t) (cnt * siz)) {
+        /* failure */
+        return (0);
+    }
+
+    /* success */
+    return (1);
+}
+
+
 static int __tui_unix_execute(struct _tui_h *pTui, const char *pCmd) {
     /* null-check */
     if (!pTui) { return (0); }
@@ -338,14 +365,7 @@ static int __tui_unix_execute(struct _tui_h *pTui, const char *pCmd) {
     for ( ; pCmd[i]; i++);
 
     /* exec 'pCmd' */
-    ssize_t nwrite = 0;
-    if ((nwrite = write(unix->fd_stdout, pCmd, i)) != i) {
-        /* failure */
-        return (0);
-    }
-
-    /* success */
-    return (1);
+    return (tui_output(pTui, (void *) pCmd, i, sizeof(*pCmd)));
 }
 
 
@@ -424,6 +444,7 @@ int tui_init(tui_t *pTui) {
     tui->api.init = __tui_unix_init;
     tui->api.free = __tui_unix_free;
     tui->api.input = __tui_unix_input;
+    tui->api.output = __tui_unix_output;
     tui->api.execute = __tui_unix_execute;
     tui->api.request = __tui_unix_request;
 
@@ -465,6 +486,17 @@ int tui_input(tui_t pTui, int *pOut) {
 
     /* run 'input' */
     return (tui->api.input(pTui, pOut));
+}
+
+
+int tui_output(tui_t pTui, void *pDat, const size_t count, const size_t size) {
+    /* references */
+    struct
+    _tui_h *tui = (struct _tui_h *) pTui;
+    if (!tui) { return (0); }
+
+    /* run 'output' */
+    return (tui->api.output(pTui, pDat, count, size));
 }
 
 
