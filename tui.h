@@ -47,14 +47,19 @@
 
 typedef void *tui_t;
 
+/* 'tui_init' : initialize 'tui.h' library and it's resources. */
 int tui_init(tui_t *);
 
+/* 'tui_free' : release 'tui.h' resources. */
 int tui_free(tui_t);
 
+/* 'tui_read' : read single byte from the standard input stream. */
 int tui_read(tui_t, void *);
 
+/* 'tui_write' : write n-number of bytes to standard output stream. */
 int tui_write(tui_t, const void *, const size_t);
 
+/* 'tui_write_cstr' : write null-terminated c-string to standard output stream. */
 int tui_write_cstr(tui_t, const char *);
 
 /* }}} */
@@ -72,6 +77,10 @@ int tui_write_cstr(tui_t, const char *);
  * - https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h4-Functions-using-CSI-_-ordered-by-the-final-character-lparen-s-rparen:CSI-Pm-m.1CA7
  * - https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h4-Functions-using-CSI-_-ordered-by-the-final-character-lparen-s-rparen:CSI-?-Pm-h.1D0E
  * - https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h4-Functions-using-CSI-_-ordered-by-the-final-character-lparen-s-rparen:CSI-?-Pm-l.1D12
+ *
+ * TODO:
+ * Consider making all the run-time static escape sequances compile-time?
+ * This would avoid '-Wunused-variable' error...
  * */
 
 /* {{{ */
@@ -551,6 +560,7 @@ static int __tui_unix_write_cstr(struct _tui_h *pTui, const char *pStr) {
 
 #  endif
 
+/* 'tui_init' : initialize 'tui.h' library and it's resources. */
 int tui_init(tui_t *pTui) {
     /* null-check */
     if (!pTui) { return (0); }
@@ -585,6 +595,8 @@ int tui_init(tui_t *pTui) {
     return (tui->api.init(tui));
 }
 
+
+/* 'tui_free' : release 'tui.h' resources. */
 int tui_free(tui_t pTui) {
     /* references */
     struct
@@ -602,6 +614,7 @@ int tui_free(tui_t pTui) {
 }
 
 
+/* 'tui_read' : read single byte from the standard input stream. */
 int tui_read(tui_t pTui, void *pOut) {
     /* references */
     struct
@@ -613,6 +626,7 @@ int tui_read(tui_t pTui, void *pOut) {
 }
 
 
+/* 'tui_write' : write n-number of bytes to standard output stream. */
 int tui_write(tui_t pTui, const void *pDat, const size_t size) {
     /* references */
     struct
@@ -624,6 +638,7 @@ int tui_write(tui_t pTui, const void *pDat, const size_t size) {
 }
 
 
+/* 'tui_write_cstr' : write null-terminated c-string to standard output stream. */
 int tui_write_cstr(tui_t pTui, const char *pStr) {
     /* references */
     struct
